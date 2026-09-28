@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="نمایشگاه">
+<meta name="theme-color" content="#1e3a8a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مدیریت نمایشگاه خودرو</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--tx:#1f2430;--mut:#6b7280;--pri:#1e3a8a;--prit:#fff;--bd:#e6e1d7;--ok:#15803d;--wn:#b45309;--no:#b91c1c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1420;--card:#172033;--tx:#eceff3;--mut:#9aa3af;--pri:#93b4ff;--prit:#0b1220;--bd:#2a3550;--ok:#4ade80;--wn:#fbbf24;--no:#f87171}}
+:root[data-theme="dark"]{--bg:#0e1420;--card:#172033;--tx:#eceff3;--mut:#9aa3af;--pri:#93b4ff;--prit:#0b1220;--bd:#2a3550;--ok:#4ade80;--wn:#fbbf24;--no:#f87171}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Vazirmatn,Tahoma,sans-serif;font-size:15px}
+.wrap{max-width:980px;margin:0 auto;padding:12px}
+h1{font-size:18px;margin:4px 0 10px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:8px;text-align:center}
+.stat b{display:block;font-size:20px}.stat span{font-size:12px;color:var(--mut)}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+.tab{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font:inherit;cursor:pointer}
+.tab.on{background:var(--pri);color:var(--prit);border-color:var(--pri)}
+.bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px}
+input,select,textarea{font:inherit;font-size:16px;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:9px;width:100%}
+textarea{min-height:60px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--pri);color:var(--prit);border:0;border-radius:8px;padding:9px 14px}
+.btn.g{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+.btn.r{background:transparent;color:var(--no);border:1px solid var(--bd)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.ph{height:150px;background:var(--bd);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:34px}
+.ph img{width:100%;height:100%;object-fit:cover}
+.cb{padding:10px}
+.cb h3{margin:0 0 4px;font-size:16px}
+.mut{color:var(--mut);font-size:13px}
+.price{font-weight:800;color:var(--pri);margin:4px 0}
+.tag{display:inline-block;font-size:12px;border-radius:20px;padding:2px 9px;border:1px solid var(--bd)}
+.avail{color:var(--ok)}.res{color:var(--wn)}.sold{color:var(--no)}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+dialog{border:1px solid var(--bd);border-radius:14px;background:var(--card);color:var(--tx);width:min(720px,96vw);padding:14px;max-height:92vh}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:8px}.f label{font-size:12px;color:var(--mut);display:block}.full{grid-column:1/-1}
+#toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:9px 16px;border-radius:20px;display:none;z-index:9}
+.empty{text-align:center;color:var(--mut);padding:30px}
+.card{cursor:pointer}
+.dw{position:relative}.dd{position:absolute;inset-inline:0;top:100%;z-index:5;max-height:200px;overflow:auto;background:var(--card);border:1px solid var(--bd);border-radius:8px;box-shadow:0 6px 18px #0003}
+.di{padding:8px 10px;cursor:pointer}.di:hover,.di.on{background:var(--bd)}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.th{position:relative;width:64px;height:48px;border-radius:6px;overflow:hidden;border:1px solid var(--bd);cursor:pointer}
+.th img{width:100%;height:100%;object-fit:cover}
+.th .x{position:absolute;top:0;left:0;background:#000a;color:#fff;border:0;width:20px;height:20px;line-height:1;padding:0}
+.big{background:var(--bd);border-radius:10px;overflow:hidden;text-align:center}
+.big img{width:100%;max-height:55vh;object-fit:contain;display:block;cursor:zoom-in}
+.dl{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin:8px 0}.dl div{display:flex;justify-content:space-between;border-bottom:1px solid var(--bd);padding:4px 0}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;z-index:20;padding:10px}
+#lb img{max-width:100%;max-height:100%;object-fit:contain}
+.empty{grid-column:1/-1}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🚗 مدیریت نمایشگاه خودرو</h1>
+<div id="tip" class="card cb" style="margin-bottom:10px;cursor:default" hidden></div>
+<div class="row" style="margin:0 0 10px"><button class="btn g" onclick="backup()">پشتیبان‌گیری</button><button class="btn g" onclick="$('#rf').click()">بازیابی</button><button class="btn r" onclick="wipe()">پاک‌سازی همه</button><input type="file" id="rf" accept=".json,application/json" hidden></div>
+<div class="tabs"><button class="tab on" data-t="cars">ماشین‌ها</button><button class="tab" data-t="cus">مشتری‌ها</button></div>
+<div id="cars">
+ <div class="bar">
+  <input id="q" placeholder="جستجو: برند، مدل، رنگ…" style="grid-column:span 2">
+  <select id="fs"><option value="">همه وضعیت‌ها</option><option value="avail">موجود</option><option value="res">رزرو</option><option value="sold">فروخته شد</option></select>
+  <select id="fb"><option value="">همه برندها</option></select>
+  <input id="fp" type="number" inputmode="numeric" placeholder="حداکثر قیمت (میلیون)">
+  <input id="fy" type="number" inputmode="numeric" placeholder="حداقل سال">
+  <button class="btn" onclick="openCar()">+ ماشین جدید</button>
+ </div>
+ <div class="grid" id="carList"></div>
+</div>
+<div id="cus" hidden>
+ <div class="bar">
+  <input id="cq" placeholder="جستجو: نام، تلفن، ماشین مورد نظر…" style="grid-column:span 2">
+  <select id="cs"><option value="">همه وضعیت‌ها</option><option value="new">تازه</option><option value="talk">در حال مذاکره</option><option value="won">خرید کرد</option><option value="lost">از دست رفت</option></select>
+  <button class="btn" onclick="openCus()">+ مشتری جدید</button>
+ </div>
+ <div class="grid" id="cusList"></div>
+</div>
+</div>
+<dialog id="dlg"></dialog>
+<div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fa=n=>Number(n||0).toLocaleString('fa-IR');
+const fy=n=>String(n).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const norm=s=>String(s).replace(/ي/g,'ی').replace(/ك/g,'ک').replace(/[\s\u200c]/g,'').toLowerCase();
+const BR=['پژو','پراید','سمند','دنا','تیبا','ساینا','کوییک','رانا','شاهین','تارا','ریرا','آریا','سایپا','ایران خودرو','رنو','ساندرو','تندر','ال ۹۰','هیوندای','کیا','تویوتا','هوندا','نیسان','مزدا','میتسوبیشی','سوزوکی','شورولت','فورد','دوو','سیتروئن','اپل','فولکس‌واگن','اسکودا','فیات','بنز','بی‌ام‌و','آئودی','پورشه','ولوو','لکسوس','لندرور','جگوار','مینی','چری','ام‌وی‌ام','جک','لیفان','بایک','هایما','فاو','ام‌جی','جیلی','چانگان','دانگ فنگ','کی‌ام‌سی','برلیانس','جی‌ای‌سی','دیگنیتی','فیدلیتی','سینو','سوبارو','جیپ','دوج','کادیلاک','اینفینیتی','مازراتی','بنتلی','رولزرویس'];
+const CS={avail:'موجود',res:'رزرو',sold:'فروخته شد'},US={new:'تازه',talk:'در حال مذاکره',won:'خرید کرد',lost:'از دست رفت'};
+const COL={'سفید':'#f5f5f5','مشکی':'#1c1c1e','نقره‌ای':'#c0c4c8','خاکستری':'#7b7f85','مدادی':'#4b4f56','قرمز':'#c0262d','آبی':'#2a5db0','سرمه‌ای':'#1b2a49'};
+const SH={
+ sedan:['M28 112 L34 96 Q40 90 62 86 L100 64 Q108 58 125 58 L205 58 Q222 58 232 66 L255 86 Q285 90 294 100 L296 112 Z','M108 68 L126 63 L160 63 L160 86 L96 86 Z M168 63 L204 63 L226 86 L168 86 Z'],
+ hatch:['M30 112 L34 98 Q38 92 60 88 L92 64 Q100 58 118 58 L220 58 Q236 58 244 68 L262 90 Q290 92 296 102 L296 112 Z','M100 68 L120 63 L160 63 L160 86 L88 86 Z M168 63 L216 63 L236 86 L168 86 Z'],
+ suv:['M28 114 L32 92 Q36 84 58 80 L84 56 Q92 50 110 50 L228 50 Q244 50 252 60 L268 82 Q292 86 296 98 L298 114 Z','M94 60 L112 55 L158 55 L158 80 L82 80 Z M166 55 L226 55 L244 80 L166 80 Z']};
+function svgCar(col,t,flip){const s=SH[t]||SH.sedan;
+ const v=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 160"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dfe6ee"/><stop offset="1" stop-color="#f4f6f9"/></linearGradient></defs><rect width="320" height="160" fill="url(#g)"/><rect y="128" width="320" height="32" fill="#c9ced6"/><g${flip?' transform="translate(320 0) scale(-1 1)"':''}><ellipse cx="162" cy="132" rx="140" ry="6" fill="#0002"/><path d="${s[0]}" fill="${col}" stroke="#0005" stroke-width="2"/><path d="${s[1]}" fill="#bcd4e6" stroke="#0005" stroke-width="1.5"/><circle cx="80" cy="114" r="20" fill="#222"/><circle cx="80" cy="114" r="9" fill="#999"/><circle cx="248" cy="114" r="20" fill="#222"/><circle cx="248" cy="114" r="9" fill="#999"/></g></svg>`;
+ return 'data:image/svg+xml;utf8,'+encodeURIComponent(v)}
+let S={cars:[],cus:[]},fresh=true;
+try{const r=localStorage.getItem('dcrm2');if(r){S=JSON.parse(r);fresh=false}}catch(e){}
+if(fresh){
+ const sd=[['پژو','206 تیپ ۵',1398,62000,'سفید','دنده‌ای','بنزین','بدون رنگ',520,'avail','','hatch'],
+ ['هیوندای','سوناتا',1400,38000,'مشکی','اتوماتیک','بنزین','دو لکه رنگ',2100,'avail','آقای رضایی','sedan'],
+ ['پراید','۱۳۱',1395,110000,'نقره‌ای','دنده‌ای','دوگانه‌سوز','سالم',210,'res','','sedan'],
+ ['سمند','LX',1397,85000,'مدادی','دنده‌ای','دوگانه‌سوز','رنگ‌شدگی سپر',380,'avail','','sedan'],
+ ['تیبا','۲',1399,45000,'قرمز','دنده‌ای','بنزین','سالم',290,'avail','','hatch'],
+ ['دنا','پلاس',1400,30000,'سفید','دنده‌ای','بنزین','بدون رنگ',720,'avail','','sedan'],
+ ['کیا','سراتو',1399,52000,'سرمه‌ای','اتوماتیک','بنزین','سالم',1450,'avail','','sedan'],
+ ['تویوتا','کمری',1398,70000,'خاکستری','اتوماتیک','بنزین','یک لکه رنگ',2600,'res','آقای احمدی','sedan'],
+ ['هیوندای','توسان',1399,60000,'سفید','اتوماتیک','بنزین','بدون رنگ',2900,'avail','','suv'],
+ ['کیا','اسپورتیج',1400,41000,'مشکی','اتوماتیک','بنزین','سالم',3100,'avail','','suv'],
+ ['رنو','تندر ۹۰',1396,98000,'آبی','دنده‌ای','بنزین','رنگ‌شدگی در',340,'sold','','sedan'],
+ ['ام‌وی‌ام','X22',1401,20000,'قرمز','اتوماتیک','بنزین','بدون رنگ',980,'avail','','suv']];
+ S.cars=sd.map(a=>({id:uid(),brand:a[0],model:a[1],year:a[2],km:a[3],color:a[4],gear:a[5],fuel:a[6],body:a[7],price:a[8],status:a[9],cons:a[10],notes:'',imgs:[svgCar(COL[a[4]]||'#888',a[11]),svgCar(COL[a[4]]||'#888',a[11],1)]}));
+ S.cus=[{id:uid(),name:'علی محمدی',phone:'09120000000',budget:600,want:'پژو',status:'new',fu:'',notes:''},{id:uid(),name:'سارا کریمی',phone:'09350000000',budget:3000,want:'هیوندای',status:'talk',fu:'',notes:'دنبال شاسی‌بلند است'}];
+}
+function save(){try{localStorage.setItem('dcrm2',JSON.stringify(S))}catch(e){toast('ذخیره ممکن نشد (حجم عکس‌ها زیاد است)')}}
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2200)}
+const open_=()=>{const d=$('#dlg');if(!d.open)d.showModal()};
+const fd=v=>v?new Date(v).toLocaleDateString('fa-IR'):'';
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));$('#cars').hidden=b.dataset.t!=='cars';$('#cus').hidden=b.dataset.t!=='cus'});
+['q','fs','fb','fp','fy'].forEach(i=>$('#'+i).oninput=renderCars);
+['cq','cs'].forEach(i=>$('#'+i).oninput=renderCus);
+function render(){
+ const fb=$('#fb'),cur=fb.value,br=[...new Set(S.cars.map(c=>c.brand))].sort();
+ fb.innerHTML='<option value="">همه برندها</option>'+br.map(b=>`<option${b===cur?' selected':''}>${esc(b)}</option>`).join('');
+ renderCars();renderCus();
+}
+function renderCars(){
+ const q=norm($('#q').value),st=$('#fs').value,b=$('#fb').value,p=+$('#fp').value,y=+$('#fy').value;
+ const l=S.cars.filter(c=>(!st||c.status===st)&&(!b||c.brand===b)&&(!p||c.price<=p)&&(!y||c.year>=y)&&(!q||norm(c.brand+c.model+c.color+c.notes+c.year).includes(q)));
+ $('#carList').innerHTML=l.length?l.map(c=>{const im=c.imgs||[];return `<div class="card" onclick="openDetail('${c.id}')"><div class="ph">${im[0]?`<img src="${im[0]}" alt="">`:'🚗'}</div><div class="cb">
+ <h3>${esc(c.brand)} ${esc(c.model)} <span class="mut">${fy(c.year)}</span></h3>
+ <div class="mut">${fa(c.km)} کیلومتر · ${esc(c.color)} · ${esc(c.gear)} · ${esc(c.fuel)}</div>
+ <div class="price">${fa(c.price)} میلیون تومان</div>
+ <span class="tag ${c.status}">${CS[c.status]}</span>${c.cons?` <span class="tag">امانی</span>`:''}
+ <div class="row"><button class="btn" onclick="event.stopPropagation();share('${c.id}')">ارسال کاتالوگ</button><button class="btn g" onclick="event.stopPropagation();openCar('${c.id}')">ویرایش</button><button class="btn r" onclick="event.stopPropagation();del('cars','${c.id}')">حذف</button></div></div></div>`}).join(''):'<div class="empty">ماشینی پیدا نشد</div>';
+}
+function match(u){
+ return S.cars.filter(c=>c.status==='avail'&&(!u.budget||c.price<=u.budget*1.1)&&(!u.want||u.want.split(/\s+/).some(w=>norm(c.brand+c.model+c.color).includes(norm(w))))).slice(0,4);
+}
+function renderCus(){
+ const q=$('#cq').value.trim(),st=$('#cs').value;
+ const l=S.cus.filter(u=>(!st||u.status===st)&&(!q||(u.name+' '+u.phone+' '+u.want).includes(q)));
+ $('#cusList').innerHTML=l.length?l.map(u=>{const m=match(u);return `<div class="card" style="cursor:default"><div class="cb">
+ <h3>${esc(u.name)}</h3>
+ <div class="mut" dir="ltr" style="text-align:right">${esc(u.phone)}</div>
+ <div class="mut">بودجه: ${u.budget?fa(u.budget)+' میلیون':'-'} · مورد نظر: ${esc(u.want||'-')}</div>
+ <span class="tag">${US[u.status]}</span> ${u.fu?`<span class="tag">پیگیری: ${fd(u.fu)}</span>`:''}
+ ${u.notes?`<div class="mut" style="margin-top:6px">${esc(u.notes)}</div>`:''}
+ <div class="mut" style="margin-top:6px">ماشین‌های مناسب: ${m.length?m.map(c=>esc(c.brand+' '+c.model)).join('، '):'موردی نیست'}</div>
+ <div class="row"><a class="btn g" style="text-decoration:none" href="tel:${esc(u.phone)}">تماس</a><button class="btn g" onclick="openCus('${u.id}')">ویرایش</button><button class="btn r" onclick="del('cus','${u.id}')">حذف</button></div></div></div>`}).join(''):'<div class="empty">مشتری‌ای پیدا نشد</div>';
+}
+function del(k,id){if(confirm('حذف شود؟')){S[k]=S[k].filter(x=>x.id!==id);save();render()}}
+async function share(id){
+ const c=S.cars.find(x=>x.id===id);
+ const t=`🚗 ${c.brand} ${c.model} ${fy(c.year)}\nکارکرد: ${fa(c.km)} کیلومتر\nرنگ: ${c.color}\nگیربکس: ${c.gear} | سوخت: ${c.fuel}\nبدنه: ${c.body||'-'}\n💰 قیمت: ${fa(c.price)} میلیون تومان${c.notes?'\n'+c.notes:''}`;
+ try{if(navigator.share){await navigator.share({text:t});return}}catch(e){if(e.name==='AbortError')return}
+ try{await navigator.clipboard.writeText(t);toast('متن کاتالوگ کپی شد')}catch(e){prompt('متن را کپی کنید:',t)}
+}
+function openDetail(id){
+ const c=S.cars.find(x=>x.id===id);if(!c)return;const im=c.imgs||[];
+ const rows=[['برند',c.brand],['مدل',c.model],['سال',fy(c.year)],['کارکرد',fa(c.km)+' کیلومتر'],['رنگ',c.color],['گیربکس',c.gear],['سوخت',c.fuel],['وضعیت بدنه',c.body||'-'],['امانی از',c.cons||'-']];
+ $('#dlg').innerHTML=`<div id="lb" onclick="this.style.display='none'"></div>
+ <div class="big">${im.length?`<img id="bm" src="${im[0]}" alt="">`:'<div class="ph">🚗</div>'}</div>
+ ${im.length>1?`<div class="thumbs" id="tb">${im.map((s,i)=>`<div class="th"><img src="${s}" data-i="${i}" alt=""></div>`).join('')}</div>`:''}
+ <h3 style="margin:10px 0 2px">${esc(c.brand)} ${esc(c.model)}</h3>
+ <div class="price">${fa(c.price)} میلیون تومان <span class="tag ${c.status}">${CS[c.status]}</span></div>
+ <div class="dl">${rows.map(r=>`<div><span class="mut">${r[0]}</span><b>${esc(r[1])}</b></div>`).join('')}</div>
+ ${c.notes?`<p class="mut">${esc(c.notes)}</p>`:''}
+ <div class="row"><button class="btn" onclick="share('${c.id}')">ارسال کاتالوگ</button><button class="btn g" onclick="openCar('${c.id}')">ویرایش</button><button class="btn g" onclick="$('#dlg').close()">بستن</button></div>`;
+ const bm=$('#bm');
+ if(bm)bm.onclick=()=>{$('#lb').innerHTML=`<img src="${bm.src}" alt="">`;$('#lb').style.display='flex'};
+ const tb=$('#tb');if(tb)tb.onclick=e=>{if(e.target.dataset.i!=null)bm.src=im[+e.target.dataset.i]};
+ open_();
+}
+function fld(l,n,v,t='text',cls=''){return `<div class="${cls}"><label>${l}</label><input name="${n}" type="${t}" value="${esc(v)}"${t==='number'?' inputmode="numeric"':''}></div>`}
+function sel(l,n,v,o){return `<div><label>${l}</label><select name="${n}">${o.map(x=>`<option value="${x[0]}"${x[0]===v?' selected':''}>${x[1]}</option>`).join('')}</select></div>`}
+const rd=f=>new Promise((ok,no)=>{const r=new FileReader();r.onerror=no;r.onload=()=>{const i=new Image();i.onerror=no;i.onload=()=>{const k=Math.min(1,900/Math.max(i.width,i.height)),cv=document.createElement('canvas');cv.width=i.width*k;cv.height=i.height*k;cv.getContext('2d').drawImage(i,0,0,cv.width,cv.height);ok(cv.toDataURL('image/jpeg',.75))};i.src=r.result};r.readAsDataURL(f)});
+function openCar(id){
+ const c=S.cars.find(x=>x.id===id)||{brand:'',model:'',year:1400,km:'',color:'',gear:'دنده‌ای',fuel:'بنزین',body:'',price:'',status:'avail',cons:'',notes:'',imgs:[]};
+ let brand=c.brand,imgs=[...(c.imgs||[])];
+ const g=[['دنده‌ای','دنده‌ای'],['اتوماتیک','اتوماتیک']],f=['بنزین','دوگانه‌سوز','دیزل','هیبرید','برقی'].map(x=>[x,x]);
+ $('#dlg').innerHTML=`<form id="fm" onsubmit="return false"><h3 style="margin-top:0">${id?'ویرایش ماشین':'ماشین جدید'}</h3><div class="f">
+ <div class="full dw"><label>برند (بنویسید تا فیلتر شود، سپس از لیست انتخاب کنید)</label><input id="bi" autocomplete="off" placeholder="مثلاً: پژو" value="${esc(c.brand)}"><div id="bl" class="dd" hidden></div></div>
+ ${fld('مدل','model',c.model)}${fld('سال (شمسی)','year',c.year,'number')}${fld('کارکرد (کیلومتر)','km',c.km,'number')}${fld('رنگ','color',c.color)}
+ ${sel('گیربکس','gear',c.gear,g)}${sel('سوخت','fuel',c.fuel,f)}${fld('وضعیت بدنه','body',c.body)}
+ ${fld('قیمت (میلیون تومان)','price',c.price,'number')}${sel('وضعیت','status',c.status,Object.entries(CS))}
+ ${fld('امانی از (اختیاری)','cons',c.cons,'text','full')}
+ <div class="full"><label>توضیحات</label><textarea name="notes">${esc(c.notes)}</textarea></div>
+ <div class="full"><label>عکس‌ها (تا ۶ عکس)</label><input type="file" id="pf" accept="image/*" multiple><div class="thumbs" id="pv"></div></div></div>
+ <div class="row"><button type="button" class="btn" id="sv">ذخیره</button><button type="button" class="btn g" id="cl">انصراف</button></div></form>`;
+ const bi=$('#bi'),bl=$('#bl'),pv=$('#pv');
+ const showBl=()=>{const q=norm(bi.value),l=BR.filter(b=>!q||norm(b).includes(q));bl.innerHTML=l.length?l.map(b=>`<div class="di${b===brand?' on':''}" data-b="${esc(b)}">${esc(b)}</div>`).join(''):'<div class="di mut">برندی پیدا نشد</div>';bl.hidden=false};
+ bi.oninput=()=>{brand=BR.find(b=>norm(b)===norm(bi.value))||'';showBl()};
+ bi.onfocus=showBl;
+ bl.onclick=e=>{const b=e.target.dataset.b;if(!b)return;brand=b;bi.value=b;bl.hidden=true};
+ $('#fm').onclick=e=>{if(!e.target.closest('.dw'))bl.hidden=true};
+ const rp=()=>{pv.innerHTML=imgs.map((s,i)=>`<div class="th"><img src="${s}" alt=""><button type="button" class="x" data-i="${i}">×</button></div>`).join('')};rp();
+ pv.onclick=e=>{const i=e.target.dataset.i;if(i!=null){imgs.splice(+i,1);rp()}};
+ $('#pf').onchange=async e=>{for(const fl of [...e.target.files].slice(0,6-imgs.length)){try{imgs.push(await rd(fl))}catch(_){}}e.target.value='';rp()};
+ $('#cl').onclick=()=>$('#dlg').close();
+ $('#sv').onclick=()=>{const d=Object.fromEntries(new FormData($('#fm')));
+  if(!BR.includes(brand)){toast('برند را از لیست انتخاب کنید');bi.focus();return}
+  if(!d.model||!d.price){toast('مدل و قیمت لازم است');return}
+  const o={...c,...d,brand,year:+d.year,km:+d.km,price:+d.price,imgs};
+  if(id)S.cars[S.cars.findIndex(x=>x.id===id)]=o;else S.cars.unshift({...o,id:uid()});
+  save();render();$('#dlg').close()};
+ open_();
+}
+function openCus(id){
+ const u=S.cus.find(x=>x.id===id)||{name:'',phone:'',budget:'',want:'',status:'new',fu:'',notes:''};
+ $('#dlg').innerHTML=`<form id="fm" onsubmit="return false"><h3 style="margin-top:0">${id?'ویرایش مشتری':'مشتری جدید'}</h3><div class="f">
+ ${fld('نام','name',u.name)}${fld('تلفن','phone',u.phone,'tel')}${fld('بودجه (میلیون تومان)','budget',u.budget,'number')}${fld('ماشین مورد نظر','want',u.want)}
+ ${sel('وضعیت','status',u.status,Object.entries(US))}${fld('تاریخ پیگیری','fu',u.fu,'date')}
+ <div class="full"><label>یادداشت</label><textarea name="notes">${esc(u.notes)}</textarea></div></div>
+ <div class="row"><button type="button" class="btn" id="sv">ذخیره</button><button type="button" class="btn g" id="cl">انصراف</button></div></form>`;
+ $('#cl').onclick=()=>$('#dlg').close();
+ $('#sv').onclick=()=>{const d=Object.fromEntries(new FormData($('#fm')));if(!d.name){toast('نام لازم است');return}
+  const o={...u,...d,budget:+d.budget||0};if(id)S.cus[S.cus.findIndex(x=>x.id===id)]=o;else S.cus.unshift({...o,id:uid()});
+  save();render();$('#dlg').close()};
+ open_();
+}
+async function backup(){
+ const s=JSON.stringify(S),n='backup-'+new Date().toISOString().slice(0,10)+'.json',f=new File([s],n,{type:'application/json'});
+ try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e.name==='AbortError')return}
+ const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=n;document.body.appendChild(a);a.click();a.remove();toast('فایل پشتیبان ساخته شد');
+}
+$('#rf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+ try{const d=JSON.parse(await f.text());if(!Array.isArray(d.cars)||!Array.isArray(d.cus))throw 0;
+  if(!confirm('اطلاعات فعلی با فایل پشتیبان جایگزین شود؟'))return;S=d;save();render();toast('بازیابی شد')}catch(_){toast('فایل پشتیبان معتبر نیست')}};
+function wipe(){if(confirm('همه‌ی ماشین‌ها و مشتری‌ها پاک شود؟ (بهتر است اول پشتیبان بگیرید)')){S={cars:[],cus:[]};save();render()}}
+if(fresh)save();
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(_){}
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent),sa=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+ if(ios&&!sa&&!localStorage.getItem('tipx')){const t=$('#tip');t.hidden=false;t.innerHTML='برای نصب روی آیفون: در Safari دکمه‌ی اشتراک‌گذاری (مربع با فلش) را بزنید و «Add to Home Screen» را انتخاب کنید.<div class="row"><button class="btn g" onclick="localStorage.setItem(\'tipx\',1);this.closest(\'#tip\').hidden=true">متوجه شدم</button></div>'}}catch(_){}
+render();
+</script>
+</body>
+</html>
